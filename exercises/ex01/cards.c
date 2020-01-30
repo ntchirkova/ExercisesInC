@@ -1,8 +1,16 @@
+/*
+Card game that counts cards based on their values.
+
+Nina Tchirkova
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Gets name of card based on user input.
 
-// Gets name of card based on user input.
+   Returns char of card name.
+*/
 char get_card_name() {
     char card[3];
     puts("Enter the card name: ");
@@ -10,7 +18,12 @@ char get_card_name() {
     return card[0];
 }
 
-// Returns the value of the card based on the input.
+/* Identifies value of card based on its name.
+
+   card_name: char of card name.
+
+   Returns card name value as int.
+*/
 int card_to_value(char card_name) {
     int val = 0;
     switch(card_name) {
@@ -33,7 +46,13 @@ int card_to_value(char card_name) {
     return val;
 }
 
-// Returns the updated count of cards based on value.
+/* Updates count in the card game.
+
+    count: int of count from last state.
+    val: card value as int.
+
+    Returns updated count.
+*/
 int count_cards(int count, int val) {
     if ((val > 2) && (val <7)) {
         count++;
