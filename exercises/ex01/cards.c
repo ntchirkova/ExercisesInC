@@ -38,7 +38,7 @@ int card_to_value(char card_name) {
         case 'X':
             break;
         default:
-            val = card_name - '0'; // why is this possible
+            val = card_name - '0';
             if ((val < 1) || (val > 10)) {
                 puts("I don't understand that value!");
             }
