@@ -14,7 +14,7 @@ int *foo() {
     int i;
     int array[SIZE];
 
-    printf("%p\n", array);
+    // printf("%p\n", array);
 
     for (i=0; i<SIZE; i++) {
         array[i] = 42;
@@ -26,7 +26,7 @@ void bar() {
     int i;
     int array[SIZE];
 
-    printf("%p\n", array);
+    // printf("%p\n", array);
 
     for (i=0; i<SIZE; i++) {
         array[i] = i;
@@ -45,3 +45,14 @@ int main()
 
     return 0;
 }
+
+/* 
+This code demonstrates that returning pointers to stack allocated
+data results in unpredictable results. Even though it would seem like
+this code would print 42 5 times it prints:
+0
+477165627
+0
+0
+0
+*/
