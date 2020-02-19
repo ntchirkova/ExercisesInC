@@ -27,8 +27,15 @@ returns: 1 if true, 0 otherwise
 */
 int endswith(char *s, char *suffix)
 {
-    // TODO: Fill this in!
-    return 0;
+    int len_s = strlen(s);
+    int len_suffix = strlen(suffix);
+    int i;
+    for (i = 0; i < len_suffix; i++) {
+        if (!(s[len_s - 1 - i] == suffix[len_suffix - 1 - i])) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 
