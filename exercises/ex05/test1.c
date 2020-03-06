@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "rand.h"
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
     int i;
-    double x;
+    float x;
 
     srandom (time (NULL));
 
@@ -14,4 +15,5 @@ main (int argc, char *argv[])
         x = random_float();
         printf ("%lf\n", x);
     }
+    return 0;
 }

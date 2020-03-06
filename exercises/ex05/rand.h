@@ -4,6 +4,9 @@
     License: MIT License https://opensource.org/licenses/MIT
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 float my_random_float();
   
 float my_random_float2();
@@ -17,5 +20,3 @@ float dummy2();
 float random_float();
   
 float random_double();
-
-

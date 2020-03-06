@@ -4,7 +4,9 @@ Copyright 2016 Allen B. Downey
 License: MIT License https://opensource.org/licenses/MIT
 */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include "rand.h"
 
 // generate a random float using the algorithm described
 // at http://allendowney.com/research/rand
@@ -78,8 +80,28 @@ float my_random_float2()
 // compute a random double using my algorithm
 double my_random_double()
 {
-    // TODO: fill this in
-}
+    int x, exp, mant;
+    double d;
+
+    // this union is for assembling the float.
+    union {
+        double d;
+        int i;
+    } b;
+
+    x = random();
+
+    asm ("bsfl %1, %0"
+    :"=r"(exp)
+    :"r"(x)
+    );
+    exp = 1024 - exp;
+
+    mant = x >> 11;
+    b.i = (exp << 23) | mant;
+
+    return b.d;
+} 
 
 // return a constant (this is a dummy function for time trials)
 float dummy()
