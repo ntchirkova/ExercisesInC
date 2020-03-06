@@ -80,25 +80,32 @@ float my_random_float2()
 // compute a random double using my algorithm
 double my_random_double()
 {
-    int x, exp, mant;
-    double d;
+    uint64_t x, mant;
+    uint64_t exp = 1024;
+    uint64_t mask = 1;
 
     // this union is for assembling the float.
     union {
         double d;
-        int i;
+        uint64_t i;
     } b;
 
-    x = random();
+    while (1) {
+        x = random();
+        if (x == 0) {
+            exp -= 63;
+        } else {
+            break;
+        }
+    }
 
-    asm ("bsfl %1, %0"
-    :"=r"(exp)
-    :"r"(x)
-    );
-    exp = 1024 - exp;
+    while(x & mask) {
+        mask <<= 1;
+        exp--;
+    }
 
     mant = x >> 11;
-    b.i = (exp << 23) | mant;
+    b.i = (exp << 52) | mant;
 
     return b.d;
 } 
