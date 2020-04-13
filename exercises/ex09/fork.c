@@ -12,13 +12,21 @@ License: MIT License https://opensource.org/licenses/MIT
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <wait.h>
+#include <sys/wait.h>
 
+
+/*
+I added a few variables that were local and global to see how they were manipulated
+by the child and parent threads.
+Overall it seems like the local variables are reintialized each time while the global
+variables are shared.
+*/
 
 // errno is an external global variable that contains
 // error information
 extern int errno;
 
+int global_counter; // see how global variables are shared
 
 // get_seconds returns the number of seconds since the
 // beginning of the day, with microsecond precision
@@ -30,10 +38,17 @@ double get_seconds() {
 }
 
 
-void child_code(int i)
-{
+void child_code(int i, int *family_ptr)
+{   
+    int child_counter = 0; // looking at local variables in child code
     sleep(i);
     printf("Hello from child %d.\n", i);
+    global_counter++;
+    printf("Child %d changed global counter to %d.\n", i, global_counter);
+    *family_ptr = *family_ptr + 1;
+    printf("Child %d changed family counter to %d.\n", i, *family_ptr);
+    child_counter = child_counter + i;
+    printf("Child %d changed child counter to %d.\n", i, child_counter);
 }
 
 // main takes two parameters: argc is the number of command-line
@@ -45,6 +60,8 @@ int main(int argc, char *argv[])
     pid_t pid;
     double start, stop;
     int i, num_children;
+    int family_counter = 0; // local varialbe in main program
+    global_counter = 0;
 
     // the first command-line argument is the name of the executable.
     // if there is a second, it is the number of children to create.
@@ -59,6 +76,8 @@ int main(int argc, char *argv[])
 
     for (i=0; i<num_children; i++) {
 
+        family_counter++;
+
         // create a child process
         printf("Creating child %d.\n", i);
         pid = fork();
@@ -72,7 +91,7 @@ int main(int argc, char *argv[])
 
         /* see if we're the parent or the child */
         if (pid == 0) {
-            child_code(i);
+            child_code(i, &family_counter);
             exit(i);
         }
     }
