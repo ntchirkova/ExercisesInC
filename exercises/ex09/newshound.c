@@ -11,7 +11,7 @@ Modified by Allen Downey.
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <wait.h>
+#include <sys/wait.h>
 
 
 void error(char *msg)
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Usage: %s <search phrase>\n", argv[0]);
         return 1;
     }
-    const char *PYTHON = "/usr/bin/python2";
+    const char *PYTHON = "/usr/bin/python2.7";
     const char *SCRIPT = "rssgossip.py";
     char *feeds[] = {
         "http://www.nytimes.com/services/xml/rss/nyt/Africa.xml",
@@ -42,10 +42,16 @@ int main(int argc, char *argv[])
     for (int i=0; i<num_feeds; i++) {
         sprintf(var, "RSS_FEED=%s", feeds[i]);
         char *vars[] = {var, NULL};
-
-        int res = execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars);
-        if (res == -1) {
-            error("Can't run script.");
+        pid_t pid = fork();
+        if (pid == -1) {
+            fprintf(stderr, "Can't fork process: %s\n", strerror(errno));
+            return 1;
+        }
+        if (pid == 0) {
+            if (execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars) == -1) {
+                error("Can't run this script.");
+                return 1;
+            }
         }
     }
     return 0;
