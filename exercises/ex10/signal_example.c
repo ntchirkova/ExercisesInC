@@ -19,6 +19,8 @@ Based on an example in Head First C.
 #include <signal.h>
 
 int score = 0;
+int a, b, answer;
+char txt[4];
 
 /* Set up a signal handler.
 
@@ -33,6 +35,38 @@ int catch_signal(int sig, void (*handler) (int)) {
     return sigaction(sig, &action, NULL);
 }
 
+/* Play the game.
+
+    alarm_bool: 1 if you should use the alarm and 0 if you should not.
+*/
+void play_game(int alarm_bool) {
+    // pose the question
+    a = rand() % 11;
+    b = rand() % 11;
+    printf("\nWhat is %d times %d? ", a, b);
+
+    // set (or reset) the alarm
+    if (alarm_bool) {
+        alarm(5);
+    }
+
+    // get the answer
+    while (1) {
+        char *ret = fgets(txt, 4, stdin);
+        if (ret) break;
+    }
+    answer = atoi(txt);
+
+    // check the answer
+    if (answer == a * b) {
+        printf("\nRight!\n");
+        score++;
+    } else {
+        printf("\nWrong!\n");
+    }
+    printf("Score: %i\n", score);
+}
+
 /* Signal handler: End the game.
  */
 void end_game(int sig)
@@ -45,12 +79,11 @@ void end_game(int sig)
 */
 void times_up(int sig) {
     puts("\nTIME'S UP!");
+    play_game(0);
     raise(SIGINT);
 }
 
 int main(void) {
-    int a, b, answer;
-    char txt[4];
 
     // when the alarm goes off, call times_up
     catch_signal(SIGALRM, times_up);
@@ -62,29 +95,7 @@ int main(void) {
     srandom((unsigned int) time(NULL));
 
     while(1) {
-        // pose the question
-        a = rand() % 11;
-        b = rand() % 11;
-        printf("\nWhat is %d times %d? ", a, b);
-
-        // set (or reset) the alarm
-        alarm(5);
-
-        // get the answer
-        while (1) {
-            char *ret = fgets(txt, 4, stdin);
-            if (ret) break;
-        }
-        answer = atoi(txt);
-
-        // check the answer
-        if (answer == a * b) {
-            printf("\nRight!\n");
-            score++;
-        } else {
-            printf("\nWrong!\n");
-        }
-        printf("Score: %i\n", score);
+        play_game(1);
     }
     return 0;
 }
