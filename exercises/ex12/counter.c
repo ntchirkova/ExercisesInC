@@ -9,7 +9,7 @@ License: GNU GPLv3
 #include <stdlib.h>
 #include <pthread.h>
 
-#define NUM_CHILDREN 5
+#define NUM_CHILDREN 8
 
 /* Print an error message and exit.
 */
@@ -73,7 +73,7 @@ void join_thread(pthread_t thread)
 */
 void child_code(Shared *shared)
 {
-    printf("counter = %d\n", shared->counter);
+    // printf("counter = %d\n", shared->counter);
     shared->counter++;
 }
 
@@ -101,6 +101,6 @@ int main()
         join_thread(child[i]);
     }
 
-    printf("Final value of counter is %d\n", shared->counter);
+    // printf("Final value of counter is %d\n", shared->counter);
     return 0;
 }
